@@ -16,9 +16,9 @@ const router = Router();
 router.get("/comments", async function(req, res) {
 
     try {
-        const {userId, productId} = req.body;
+        const { userID, productID } = req.body;
 
-        res.status(200).json(await getAllComments(userId, productId));
+        res.status(200).json(await getAllComments(userID, productID));
 
     } catch (error) {
 
@@ -33,9 +33,9 @@ router.get("/comments", async function(req, res) {
  */
 router.post("/comments", async function(req, res) {
     try {
-        const {productId, userId, text} = req.body;
+        const { productID, userID, text } = req.body;
 
-        res.status(200).json(await addComment(userId, productId, text));
+        res.status(200).json(await addComment(userID, productID, text));
 
     } catch (error) {
 
@@ -50,9 +50,9 @@ router.post("/comments", async function(req, res) {
  */
 router.delete("/comments", async function(req, res) {
     try {
-        const {commentId} = req.body;
+        const { commentID } = req.body;
 
-        res.status(200).json(await deleteComment(commentId));
+        res.status(200).json(await deleteComment(commentID));
 
     } catch (error) {
     
