@@ -1,4 +1,4 @@
-import { GET_PRODUCTS, SORT_PRODUCTS, GET_PRODUCT_ID, GET_PRODUCT_TYPE } from "../actions/actionTypes";
+import { GET_PRODUCTS, SORT_PRODUCTS, GET_PRODUCT_ID, GET_PRODUCT_TYPE, GET_PRODUCT_BY_NAME } from "../actions/actionTypes";
 
 const initialState = {
   products: [],
@@ -8,6 +8,7 @@ const initialState = {
   listOffers: [],
   productDetail: {},
   productType: [],
+  errorSearch:"",
 };
 
 const rootReducer = (state = initialState, action) => {
@@ -82,16 +83,32 @@ const rootReducer = (state = initialState, action) => {
         listOffers: state.listOffers.sort("discount"),
       };
 
+      // ---- SEARCH BAR -----
+
+      case GET_PRODUCT_BY_NAME: {
+        if (action.payload.length===0) {
+          return {
+            ...state,
+            error:"Country Not Found"
+          }
+        } else {
+          return {
+            ...state,
+            products: action.payload,
+            error:"",
+          }
+        }
+        
+      }
+
 
       // ---- DETAIL -----
+
     case GET_PRODUCT_ID: {
 
         return{
             ...state,
             productDetail: action.payload
-
-
-
         }
     }
     case GET_PRODUCT_TYPE: {
@@ -102,6 +119,7 @@ const rootReducer = (state = initialState, action) => {
          ...state,
          productType: filterType
      }
+     
   }
   default:
             return state
