@@ -1,4 +1,4 @@
-import { GET_PRODUCTS, SORT_PRODUCTS, GET_PRODUCT_ID, GET_PRODUCT_TYPE } from "./actionTypes";
+import { GET_PRODUCTS, SORT_PRODUCTS, GET_PRODUCT_ID, GET_PRODUCT_TYPE, GET_PRODUCT_BY_NAME } from "./actionTypes";
 import axios from 'axios';
 
 
@@ -45,8 +45,19 @@ export const getProductType = (type) => {
             console.log(error)
         }
     }
+}
 
-
-
+export const getProductByName = (name) => {
+    return async function (dispatch) {
+        try {
+            const response = await axios.get('http://localhost:3001/products?name='+name)
+            return dispatch ({
+                type: GET_PRODUCT_BY_NAME,
+                payload: response.data
+            });
+        } catch (e) {
+            console.log(e);
+        }
+    }
 }
 
