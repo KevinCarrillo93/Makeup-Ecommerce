@@ -6,22 +6,27 @@ import { getProductByName, getProducts } from "../../redux/actions";
 export const NavBar = () => {
 
   const dispatch = useDispatch();
-  const [name,setName] = useState("");
+  const [name, setName] = useState("");
   const error = useSelector(state => state.error);
 
-function buscar (name) {
-  if (name==="") {
-    dispatch (getProducts())
-    dispatch(getProductByName(""))
-  } else {
-    dispatch (getProductByName(name))
-  }
-}
+// function buscar (name) {
+//   if (name==="") {
+//     dispatch(getProductByName(""))
+//   } else {
+//     dispatch(getProductByName(name))
+//   }
+// }
 
 function handleSubmit (e) {
   e.preventDefault();
-  buscar(name)
+  if(e.key === 'Enter'){
+    dispatch(getProductByName(name))
+    setName("");
+} else if (!e.key){
+  dispatch(getProductByName(name))
   setName("");
+}
+  
 };
   
 
@@ -33,24 +38,23 @@ function handleSubmit (e) {
         </div>
         <div >
           <Link to="./home">Home</Link>
-          <Link to="./listproducts/1">Catalogue</Link>
+          <Link to="./catalogue">Catalogue</Link>
           <Link to="./createproduct">Create Product</Link>
           <Link to="./about">About</Link>
         </div>
       </div>
     
-      <form onSubmit={handleSubmit}>
 
       <input 
           type="text"
-          placeholder="Buscar..."
+          placeholder="Search..."
           value={name}
-          onChange={e=> setName(e.target.value)}
+          onChange={e => setName(e.target.value)}
+          onKeyUp={handleSubmit}
         />
-        <input type="submit" value="Search" />
+        <button type="submit" onClick={handleSubmit}>Search</button>
         {error && typeof error==="string"? <p>{error}</p>:null}
 
-      </form>
     
     {/* BOTONES CON LOS ÍCONOS PARA CARRITO, CORAZONES Y LOGIN */}
       <div >

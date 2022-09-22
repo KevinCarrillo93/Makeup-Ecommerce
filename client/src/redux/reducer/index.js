@@ -1,4 +1,12 @@
-import { GET_PRODUCTS, SORT_PRODUCTS, GET_PRODUCT_ID, GET_PRODUCT_TYPE, GET_PRODUCT_BY_NAME } from "../actions/actionTypes";
+import {
+  GET_PRODUCTS,
+  SORT_PRODUCTS,
+  GET_PRODUCT_ID,
+  GET_PRODUCT_BY_NAME,
+  FILTER_BRANDS,
+  GET_HOME_PRODUCTS,
+  RESET_DETAIL,
+} from "../actions/actionTypes";
 
 const initialState = {
   products: [],
@@ -8,7 +16,7 @@ const initialState = {
   listOffers: [],
   productDetail: {},
   productType: [],
-  errorSearch:"",
+  errorSearch: "",
 };
 
 const rootReducer = (state = initialState, action) => {
@@ -18,6 +26,58 @@ const rootReducer = (state = initialState, action) => {
         ...state,
         products: action.payload,
         allProducts: action.payload,
+      };
+
+    case GET_HOME_PRODUCTS:
+      let sortOffers;
+      let sortPopular;
+      let sortNew;
+      let products = action.payload;
+
+      /* Get Offers array */
+      let discountedProducts = products?.filter((product) => {
+        return product.discount >= 1;
+      });
+
+      if (discountedProducts.length) {
+        sortOffers = discountedProducts?.sort((a, b) => {
+          if (a.discount < b.discount) return 1;
+          if (a.discount > b.discount) return -1;
+          else return 0;
+        });
+      } else {
+        sortOffers = products.sort((a, b) => {
+          if (a.price < b.price) return -1;
+          if (a.price > b.price) return 1;
+          else return 0;
+        });
+      }
+
+      /* Get Popular array */
+      sortPopular = products.sort((a, b) => {
+        if (a.rank < b.rank) return 1;
+        if (a.rank > b.rank) return -1;
+        else return 0;
+      });
+
+      /* Get Newest array */
+      sortNew = products.sort((a, b) => {
+        if (a.createdAt < b.createdAt) return 1;
+        if (a.createdAt > b.createdAt) return -1;
+        else return 0;
+      });
+
+      sortOffers.splice(12);
+      sortPopular.splice(12);
+      sortNew.splice(12);
+
+      return {
+        ...state,
+        products: action.payload,
+        allProducts: action.payload,
+        listOffers: sortOffers,
+        listPopular: sortPopular,
+        listNewArrivals: sortNew,
       };
 
     case SORT_PRODUCTS:
@@ -39,36 +99,45 @@ const rootReducer = (state = initialState, action) => {
           break;
         case "priceDesc":
           sorter = (a, b) => {
-            if (a.price < b.price) return 1;
-            if (a.price > b.price) return -1;
+            if (
+              a.price - (a.price * a.discount) / 100 <
+              b.price - (b.price * b.discount) / 100
+            )
+              return 1;
+            if (
+              a.price - (a.price * a.discount) / 100 >
+              b.price - (b.price * b.discount) / 100
+            )
+              return -1;
             else return 0;
           };
           break;
         case "priceAsc":
           sorter = (a, b) => {
-            if (a.price < b.price) return -1;
-            if (a.price > b.price) return 1;
+            if (
+              a.price - (a.price * a.discount) / 100 <
+              b.price - (b.price * b.discount) / 100
+            )
+              return -1;
+            if (
+              a.price - (a.price * a.discount) / 100 >
+              b.price - (b.price * b.discount) / 100
+            )
+              return 1;
             else return 0;
           };
           break;
         case "newest":
           sorter = (a, b) => {
-            if (a.created_at < b.created_at) return -1;
-            if (a.created_at > b.created_at) return 1;
+            if (a.createdAt < b.createdAt) return 1;
+            if (a.createdAt > b.createdAt) return -1;
             else return 0;
           };
           break;
         case "popular":
           sorter = (a, b) => {
-            if (a.rating < b.rating) return -1;
-            if (a.rating > b.rating) return 1;
-            else return 0;
-          };
-          break;
-        case "discount":
-          sorter = (a, b) => {
-            if (a.discount < b.discount) return -1;
-            if (a.discount > b.discount) return 1;
+            if (a.rank < b.rank) return 1;
+            if (a.rank > b.rank) return -1;
             else return 0;
           };
           break;
@@ -77,52 +146,63 @@ const rootReducer = (state = initialState, action) => {
       }
       return {
         ...state,
-        products: state.products.sort(sorter),
-        listNewArrivals: state.listNewArrivals.sort("newest"),
-        listPopular: state.listPopular.sort("popular"),
-        listOffers: state.listOffers.sort("discount"),
+        products: state.allProducts.sort(sorter),
       };
 
-      // ---- SEARCH BAR -----
+    // ---- FILTERS ----
+    case FILTER_BRANDS: {
+      const filteredProducts = state.allProducts?.filter((product) => {
+        return product.brand === action.payload;
+      });
 
-      case GET_PRODUCT_BY_NAME: {
-        if (action.payload.length===0) {
-          return {
-            ...state,
-            error:"Country Not Found"
-          }
-        } else {
-          return {
-            ...state,
-            products: action.payload,
-            error:"",
-          }
-        }
-        
+      if (filteredProducts.length) {
+        return {
+          ...state,
+          products: filteredProducts,
+        };
       }
-
-
-      // ---- DETAIL -----
-
-    case GET_PRODUCT_ID: {
-
-        return{
-            ...state,
-            productDetail: action.payload
-        }
     }
-    case GET_PRODUCT_TYPE: {
-      let filterType = state.products?.filter(product => {
-         return product.product_type === action.payload
-      })
+    // ---- SEARCH BAR -----
+
+    case GET_PRODUCT_BY_NAME: {
+      if (action.payload.length === 0) {
+        return {
+          ...state,
+          error: "Product Not Found",
+        };
+      } else {
+        return {
+          ...state,
+          products: action.payload,
+          error: "",
+        };
+      }
+    }
+
+    // ---- DETAIL -----
+
+    case GET_PRODUCT_ID:
+      let filterType = state.products?.filter((product) => {
+        return (
+          product.category === action.payload.category &&
+          product.id !== action.payload.id
+        );
+      });
       return {
-         ...state,
-         productType: filterType
-     }
-     
-  }
-  default:
-            return state
+        ...state,
+        productDetail: action.payload,
+        productType: filterType,
+      };
+
+    case RESET_DETAIL:
+      return {
+        ...state,
+        productDetail: {},
+        productType: [],
+      };
+
+    default:
+      return state;
   }
 
   // ---

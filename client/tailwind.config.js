@@ -1,13 +1,13 @@
 module.exports = {
   content: [
     "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
+    // "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend:{
       backgroundImage:{
         'artu': "url('./src/assets/images/ArtuC.png')",
-        'facu': "url('./src/assets/images/FacuC.png')",
+        'facu': "url('./assets/images/FacuC.png')",
         'fati': "url('./src/assets/images/Fati.jpg')",
         'kevin': "url('./src/assets/images/Kevin.png')",
         'lucio': "url('./src/assets/images/LucioC.png')",
@@ -22,7 +22,7 @@ module.exports = {
       },
       fontFamily:{
         sans: ['Poppins'],
-        serif:['Marcellus SC, serif'],
+        serif:['Marcellus SC'],
       }
     },
   },

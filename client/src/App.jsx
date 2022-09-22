@@ -31,6 +31,7 @@ export const App = () => {
           <Route path="/register" element={<Register/>} />
         </Routes>
       </AuthProvider>
+
       <Footer />
     </BrowserRouter>
   );

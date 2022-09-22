@@ -1,25 +1,27 @@
 import React, { useEffect } from "react";
 import { SwiperComponent } from "../../components/SwiperComponent/SwiperComponent";
 import { useDispatch, useSelector } from "react-redux";
-import { getProducts, sortProducts } from "../../redux/actions";
+import { getHomeProducts, sortProducts, setSort } from "../../redux/actions";
 import { Brands } from "../../components/Brands/Brands" 
 import { NewArrivalsGallery } from "../../components/NewArrivalsGallery/NewArrivalsGallery"
+import { useNavigate } from "react-router-dom";
 
 
 export const Home = () => { 
   const dispatch = useDispatch();
+  const navigate = useNavigate()
 
-  const { products, listNewArrivals, listPopular, listOffers } = useSelector(
+  const { listNewArrivals, listPopular, listOffers, sortedList } = useSelector(
     (state) => state
   );
 
   useEffect(() => {
-    dispatch(getProducts());
-  }, []);
+    dispatch(getHomeProducts())
+  }, [dispatch]);
 
   const handleSeeAll = (e) => {
     e.preventDefault();
-    dispatch(sortProducts());
+
   };
 
   return (
@@ -28,7 +30,8 @@ export const Home = () => {
         <div className="flex justify-between pt-20 pb-10">
           <h2 className="text-xl">Special Offers</h2>
           <button
-            onClick={() => handleSeeAll("discount")}
+          value="discount"
+            onClick={handleSeeAll}
             className="text-sm hover:text-secondary"
           >
             see all
@@ -40,7 +43,8 @@ export const Home = () => {
         <div className="flex justify-between pt-20 pb-10">
           <h2 className="text-xl">Popular</h2>
           <button
-            onClick={() => handleSeeAll("popular")}
+          value="popular"
+            onClick={handleSeeAll}
             className="text-sm hover:text-secondary"
           >
             see all
@@ -52,7 +56,8 @@ export const Home = () => {
         <div className="flex justify-between pt-20 pb-10">
           <h2 className="text-xl">New Arrivals</h2>
           <button
-            onClick={() => handleSeeAll("newest")}
+          value="newest"
+            onClick={handleSeeAll}
             className="text-sm hover:text-secondary"
           >
             see all

@@ -1,13 +1,15 @@
 import React from "react";
 
-export const ProductCard = ({ name, price, image_link, rating, discount }) => {
+export const ProductCard = ({ name, price, image, rank, discount, stock }) => {
   const discounted = price - Math.round((price * discount) / 100);
   
-  return (
+  // ! check stock
+  // ! add discount  tag
+return (
     <div className="group">
       <div className="aspect-w-1 aspect-h-1 w-full overflow-hidden xl:aspect-w-7 xl:aspect-h-8 ">
         <img
-          src={image_link}
+          src={image}
           alt="product"
           onError={(e) => {
             e.target.src =
@@ -28,7 +30,7 @@ export const ProductCard = ({ name, price, image_link, rating, discount }) => {
         )}
         <h5>
           <span className="text-xs material-icons text-secondary">star</span>{" "}
-          <span className="text-sm">{rating}</span>
+          <span className="text-sm">{rank}</span>
         </h5>
       </div>
     </div>
