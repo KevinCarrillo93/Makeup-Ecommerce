@@ -53,7 +53,7 @@ router.post("/users", async function(req, res) {
 /**
  * elimina el usuario por id
  */
-router.delete("/users/:userId", async function(req, res) {
+router.delete("/users/:userID", async function(req, res) {
     try {
         const { userID } = req.params;
 
