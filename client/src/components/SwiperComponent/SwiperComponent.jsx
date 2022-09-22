@@ -12,6 +12,7 @@ export const SwiperComponent = ({ array }) => {
   return (
     <div>
       <Swiper
+      className="pb-24"
         style={{
           "--swiper-pagination-color": "#FBA744",
           "--swiper-pagination-bullet-inactive-color": "#556353",
@@ -49,11 +50,7 @@ export const SwiperComponent = ({ array }) => {
             <SwiperSlide key={index}>
               <Link to={`/details/${p.id}`}>
                 <ProductCard
-                  name={p.name}
-                  price={p.price}
-                  image_link={p.api_featured_image}
-                  rating={p.rating}
-                  discount={p.discount}
+                  {... p}
                 />
               </Link>
             </SwiperSlide>
